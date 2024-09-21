@@ -1,37 +1,51 @@
+#![allow(unused)]
+
 pub struct Header {
     id: u16,
     flags: Flags,
-    qdcount: u16,
-    ancount: u16,
-    nscount: u16,
-    arcount: u16,
+    num_questions: u16,
+    num_answers: u16,
+    num_authorities: u16,
+    num_additionals: u16,
 }
 
 impl Header {
     pub fn new(
         id: u16,
         flags: Flags,
-        qdcount: u16,
-        ancount: u16,
-        nscount: u16,
-        arcount: u16,
+        num_questions: u16,
+        num_answers: u16,
+        num_authorities: u16,
+        num_additionals: u16,
     ) -> Self {
         Self {
             id,
             flags,
-            qdcount,
-            ancount,
-            nscount,
-            arcount,
+            num_questions,
+            num_answers,
+            num_authorities,
+            num_additionals,
         }
+    }
+
+    pub fn to_bytes(&self) -> Vec<u8> {
+        let mut bytes = Vec::with_capacity(12);
+        bytes.extend(self.id.to_be_bytes());
+        bytes.extend(self.flags.to_be_bytes());
+        bytes.extend(self.num_questions.to_be_bytes());
+        bytes.extend(self.num_answers.to_be_bytes());
+        bytes.extend(self.num_authorities.to_be_bytes());
+        bytes.extend(self.num_additionals.to_be_bytes());
+        bytes
     }
 }
 
+#[derive(Default)]
 pub struct Flags(u16);
 
 impl Flags {
-    pub fn new() -> Self {
-        Flags(0)
+    pub fn to_be_bytes(&self) -> [u8; 2] {
+        self.0.to_be_bytes()
     }
 
     pub fn query_or_response(mut self, is_response: bool) -> Self {
