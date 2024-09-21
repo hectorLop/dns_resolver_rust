@@ -1,12 +1,9 @@
-mod header;
-
-use crate::header as header_mod;
+use dns_resolver_rust::header::{Flags, Header, QueryType};
 
 fn main() {
-    println!("Hello, world!");
-    let header_flags = header_mod::Flags::new()
+    let header_flags = Flags::default()
         .query_or_response(false)
-        .kind_of_query(header_mod::QueryType::Standard)
+        .kind_of_query(QueryType::Standard)
         .recursion_desired(true);
-    let _header = header_mod::Header::new(12345, header_flags, 1, 0, 0, 0);
+    let _header = Header::new(12345, header_flags, 1, 0, 0, 0);
 }
