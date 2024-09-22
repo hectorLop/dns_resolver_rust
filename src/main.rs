@@ -1,9 +1,9 @@
 use std::net::UdpSocket;
 
-use dns_resolver_rust::header::DnsQuery;
+use dns_resolver_rust::{build_query, get_header_info, parse_resource_record};
 
 fn main() {
-    let dns_query = DnsQuery::build_query("www.google.com");
+    let dns_query = build_query("www.google.com");
 
     let dns_server_ip = "8.8.8.8:53";
     let socket = UdpSocket::bind("0.0.0.0:0").unwrap();
@@ -14,9 +14,11 @@ fn main() {
     let response = socket.recv(&mut buf);
 
     match response {
-        Ok(response_size) => {
-            println!("Received {response_size} bytes");
-            println!("Content {:?}", &buf[..response_size]);
+        Ok(_response_size) => {
+            println!("---------------- Response Header -----------------");
+            get_header_info(&buf[..12]);
+            println!("---------------- Response Content -----------------");
+            parse_resource_record(&buf[12..]);
         }
         Err(err) => eprintln!("ERROR {err}"),
     }
